@@ -1,13 +1,22 @@
+import {localizePage, t} from './i18n'
+
+localizePage()
+
 const onxrloaded = () => {
   LandingPage.configure({
     mediaSrc: '',
     logoSrc: '',
     backgroundSrc: '',
     backgroundColor: '#000000',
-    promptPrefix: 'Escaneie o QR Code com a câmera do celular ou acesse',
-    promptSuffix: 'no celular para abrir o Opinho em realidade aumentada.',
+    promptPrefix: t('prefix'),
+    promptSuffix: t('suffix'),
     font: 'system-ui, sans-serif',
     url: window.location.href,
+  })
+  XR8.addCameraPipelineModule({
+    name: 'opinho-camera-status',
+    onStart: () => window.dispatchEvent(new Event('opinho-camera-ready')),
+    onException: () => window.dispatchEvent(new Event('opinho-camera-error')),
   })
   const landingPage = LandingPage.pipelineModule()
   XR8.addCameraPipelineModule({

@@ -1,4 +1,5 @@
 import * as ecs from '@8thwall/ecs'
+import {t} from './i18n'
 
 const nextFrame = () => new Promise<void>(resolve => requestAnimationFrame(() => resolve()))
 
@@ -8,56 +9,45 @@ for (const event of ['pointerdown', 'pointerup', 'touchstart', 'touchend', 'mous
   preview.addEventListener(event, e => e.stopPropagation())
 }
 
-ecs.registerComponent({
-  name: 'photo-button',
-  schema: {overlay: 'eid'},
-  stateMachine: ({world, entity, eid, schemaAttribute, defineState}) => {
-    let capturing = false
-
-    defineState('loading')
-      .initial()
-      .onEnter(() => entity.hide())
-      .onExit(() => entity.show())
-      .onEvent(ecs.events.REALITY_READY, 'ready', {target: world.events.globalId})
-
-    defineState('ready').listen(eid, ecs.input.UI_CLICK, async () => {
-      if (capturing) return
-      capturing = true
-      const {overlay} = schemaAttribute.get(eid)
-      const wasHidden = ecs.Hidden.has(world, overlay)
-      const controls = document.getElementById('animation-controls')!
-      const controlsVisibility = controls.style.visibility
-      try {
-        // Wait for the controls to disappear from the rendered frame.
-        ecs.Hidden.set(world, overlay)
-        controls.style.visibility = 'hidden'
-        await nextFrame()
-        await nextFrame()
-        const photo = await world.xr.takeScreenshot()
-        const dialog = document.getElementById('photo-preview') as HTMLDialogElement
-        const image = document.getElementById('photo-image') as HTMLImageElement
-        const save = document.getElementById('photo-save') as HTMLAnchorElement
-        const close = document.getElementById('photo-close') as HTMLButtonElement
-        const url = URL.createObjectURL(photo)
-        image.src = url
-        save.href = url
-        save.download = `opinho-ar-${Date.now()}.jpg`
-        dialog.addEventListener('close', () => {
-          image.removeAttribute('src')
-          save.removeAttribute('href')
-          URL.revokeObjectURL(url)
-        }, {once: true})
-        close.onclick = () => dialog.close()
-        dialog.showModal()
-        close.focus()
-      } catch (error) {
-        console.error('Falha ao capturar foto:', error)
-        window.alert('Não foi possível capturar a foto. Tente novamente.')
-      } finally {
-        if (!wasHidden) ecs.Hidden.remove(world, overlay)
-        controls.style.visibility = controlsVisibility
-        capturing = false
-      }
-    })
-  },
-})
+let capturing = false
+export async function capturePhoto(world: ecs.World) {
+  if (capturing) return
+  capturing = true
+  const controls = document.getElementById('ar-interface')!
+  const controlsVisibility = controls.style.visibility
+  let url: string | undefined
+  const releasePhoto = () => {
+    if (url) URL.revokeObjectURL(url)
+    url = undefined
+  }
+  try {
+    controls.style.visibility = 'hidden'
+    await nextFrame()
+    await nextFrame()
+    const photo = await world.xr.takeScreenshot()
+    const dialog = document.getElementById('photo-preview') as HTMLDialogElement
+    const image = document.getElementById('photo-image') as HTMLImageElement
+    const save = document.getElementById('photo-save') as HTMLAnchorElement
+    const close = document.getElementById('photo-close') as HTMLButtonElement
+    url = URL.createObjectURL(photo)
+    image.src = url
+    save.href = url
+    save.download = `opinho-ar-${Date.now()}.jpg`
+    dialog.addEventListener('close', () => {
+      image.removeAttribute('src')
+      save.removeAttribute('href')
+      releasePhoto()
+      document.getElementById('actions-toggle')?.focus()
+    }, {once: true})
+    close.onclick = () => dialog.close()
+    dialog.showModal()
+    close.focus()
+  } catch (error) {
+    releasePhoto()
+    console.error('Photo capture failed:', error)
+    window.alert(t('photoError'))
+  } finally {
+    controls.style.visibility = controlsVisibility
+    capturing = false
+  }
+}

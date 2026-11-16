@@ -129,7 +129,8 @@
           "xrCameraType": "world",
           "phone": "AR",
           "desktop": "disabled",
-          "headset": "disabled"
+          "headset": "disabled",
+          "direction": "back"
         }
       },
       "order": 2.1029089692509704
@@ -201,7 +202,7 @@
       "ui": {
         "width": 200,
         "height": 200,
-        "text": "Camera Loading",
+        "text": "",
         "color": "#ffffff",
         "fontSize": 24,
         "type": "3d",
@@ -293,96 +294,6 @@
       "name": "Hider",
       "order": 7.322553197845954
     },
-    "9b5668bc-b512-4bb6-9c6b-8ba97d3f8af0": {
-      "id": "9b5668bc-b512-4bb6-9c6b-8ba97d3f8af0",
-      "position": [
-        16.857510635812545,
-        15.927690665172552,
-        0
-      ],
-      "rotation": [
-        0,
-        0,
-        0,
-        1
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "geometry": null,
-      "material": null,
-      "parentId": "904308fe-98f5-4c93-bf62-f39d50c6e602",
-      "components": {},
-      "ui": {
-        "text": "Toque na tela",
-        "width": "100%",
-        "height": 100,
-        "type": "overlay",
-        "verticalTextAlign": "start",
-        "textAlign": "center",
-        "fontSize": 32,
-        "position": "absolute",
-        "top": 10,
-        "left": 10,
-        "bottom": "",
-        "right": "",
-        "stackingOrder": -1,
-        "color": "#ffffff",
-        "font": {
-          "type": "font",
-          "font": "Roboto"
-        }
-      },
-      "name": "Tap Prompt",
-      "order": 10.427624126637916
-    },
-    "637f7413-261d-48bb-99c9-154bd99360da": {
-      "id": "637f7413-261d-48bb-99c9-154bd99360da",
-      "position": [
-        16.857510635812545,
-        15.927690665172552,
-        0
-      ],
-      "rotation": [
-        0,
-        0,
-        0,
-        1
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "geometry": null,
-      "material": null,
-      "parentId": "904308fe-98f5-4c93-bf62-f39d50c6e602",
-      "components": {},
-      "ui": {
-        "text": "Toque na tela",
-        "width": "100%",
-        "height": 100,
-        "type": "overlay",
-        "verticalTextAlign": "start",
-        "textAlign": "center",
-        "fontSize": 32,
-        "position": "absolute",
-        "top": 12,
-        "left": 12,
-        "bottom": "",
-        "right": "",
-        "stackingOrder": -2,
-        "color": "#000000",
-        "font": {
-          "type": "font",
-          "font": "Roboto"
-        }
-      },
-      "name": "Tap Prompt Shadow",
-      "order": 11.644447501347162
-    },
     "a02b4479-461e-40c2-ba91-0ccabbd1bd83": {
       "id": "a02b4479-461e-40c2-ba91-0ccabbd1bd83",
       "position": [
@@ -424,92 +335,6 @@
         "castShadow": true
       }
     },
-    "5ac3deca-2126-4b56-b6a2-1442d035047a": {
-      "id": "5ac3deca-2126-4b56-b6a2-1442d035047a",
-      "position": [
-        -8.46107198766815,
-        7.181789778649719,
-        0
-      ],
-      "rotation": [
-        0,
-        0,
-        0,
-        1
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "geometry": null,
-      "material": null,
-      "parentId": "904308fe-98f5-4c93-bf62-f39d50c6e602",
-      "components": {
-        "2100d3e9-8fed-4773-bc39-6f2ca5042375": {
-          "id": "2100d3e9-8fed-4773-bc39-6f2ca5042375",
-          "name": "reset-button",
-          "parameters": {}
-        }
-      },
-      "ui": {
-        "type": "overlay",
-        "width": 100,
-        "height": 36,
-        "background": "#cb1010",
-        "borderRadius": 5,
-        "flexDirection": "row",
-        "backgroundOpacity": 1,
-        "padding": "10",
-        "gap": "6",
-        "alignItems": "center",
-        "justifyContent": "center",
-        "position": "absolute",
-        "top": "",
-        "left": "",
-        "bottom": 20,
-        "right": 20,
-        "stackingOrder": 2
-      },
-      "name": "Button",
-      "order": 13.280785398189009
-    },
-    "543540e1-7086-4068-a4e3-394084c146f8": {
-      "id": "543540e1-7086-4068-a4e3-394084c146f8",
-      "position": [
-        0,
-        0,
-        0
-      ],
-      "rotation": [
-        0,
-        0,
-        0,
-        1
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "geometry": null,
-      "material": null,
-      "parentId": "5ac3deca-2126-4b56-b6a2-1442d035047a",
-      "components": {},
-      "name": "Text",
-      "ui": {
-        "width": 50,
-        "height": 14,
-        "text": "Reset",
-        "color": "#ffffff",
-        "fontSize": 16,
-        "font": {
-          "type": "font",
-          "font": "Roboto"
-        }
-      },
-      "order": 1.2563868233834565
-    },
     "904308fe-98f5-4c93-bf62-f39d50c6e602": {
       "id": "904308fe-98f5-4c93-bf62-f39d50c6e602",
       "position": [
@@ -535,105 +360,24 @@
         "07f11157-d07e-40b7-a2cd-2c7a3399af68": {
           "id": "07f11157-d07e-40b7-a2cd-2c7a3399af68",
           "name": "animation-controls",
-          "parameters": {}
-        }
-      },
-      "name": "Main Screen",
-      "order": 14.958687422311806,
-      "ui": {
-        "type": "overlay"
-      }
-    },
-    "195d339c-2f19-46ad-b4c6-ea6e7e3154ed": {
-      "id": "195d339c-2f19-46ad-b4c6-ea6e7e3154ed",
-      "position": [
-        -8.46107198766815,
-        7.181789778649719,
-        0
-      ],
-      "rotation": [
-        0,
-        0,
-        0,
-        1
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "geometry": null,
-      "material": null,
-      "parentId": "904308fe-98f5-4c93-bf62-f39d50c6e602",
-      "components": {
-        "36a7314c-eab9-46e6-b074-565bc5d26011": {
-          "id": "36a7314c-eab9-46e6-b074-565bc5d26011",
-          "name": "photo-button",
           "parameters": {
-            "overlay": {
+            "prefab": {
               "type": "entity",
-              "id": "904308fe-98f5-4c93-bf62-f39d50c6e602"
+              "id": "b534657a-38e6-4275-a37d-77b655561d5b"
+            },
+            "ground": {
+              "type": "entity",
+              "id": "bc7753ae-2b39-4f48-910a-7921b756487b"
+            },
+            "hider": {
+              "type": "entity",
+              "id": "17af117a-efce-48dd-857e-e383a3649c7b"
             }
           }
         }
       },
-      "ui": {
-        "type": "overlay",
-        "width": 100,
-        "height": 36,
-        "background": "#ffffff",
-        "borderRadius": 5,
-        "flexDirection": "row",
-        "backgroundOpacity": 1,
-        "padding": "10",
-        "gap": "6",
-        "alignItems": "center",
-        "justifyContent": "center",
-        "position": "absolute",
-        "top": "",
-        "left": "",
-        "bottom": 80,
-        "right": 20,
-        "stackingOrder": 2
-      },
-      "name": "Foto",
-      "order": 15
-    },
-    "408a24ec-f729-4333-976d-f1ed22bc3f0d": {
-      "id": "408a24ec-f729-4333-976d-f1ed22bc3f0d",
-      "position": [
-        0,
-        0,
-        0
-      ],
-      "rotation": [
-        0,
-        0,
-        0,
-        1
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "geometry": null,
-      "material": null,
-      "parentId": "195d339c-2f19-46ad-b4c6-ea6e7e3154ed",
-      "components": {},
-      "name": "Text",
-      "ui": {
-        "width": 50,
-        "height": 14,
-        "text": "Foto",
-        "color": "#171717",
-        "fontSize": 16,
-        "font": {
-          "type": "font",
-          "font": "Roboto"
-        }
-      },
-      "order": 1.2563868233834565
+      "name": "Main Screen",
+      "order": 14.958687422311806
     }
   },
   "spaces": {

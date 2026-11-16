@@ -25,20 +25,34 @@
     #app-loading .spinner { width: 28px; height: 28px; border: 3px solid #ffffff40; border-top-color: #fff; border-radius: 50%; animation: loading-spin 1s linear infinite; }
     @keyframes loading-spin { to { transform: rotate(360deg); } }
     @media (prefers-reduced-motion: reduce) { #app-loading .spinner { animation: none; } }
-    #animation-controls { position: fixed; left: 5%; bottom: calc(140px + env(safe-area-inset-bottom, 0px)); width: 90%; max-width: 480px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; z-index: 10; }
-    #animation-controls[hidden] { display: none; }
-    #animation-controls button { min-height: 44px; padding: 8px 12px; border: 0; border-radius: 8px; background: #2463eb; color: white; font: 16px/1.4 system-ui, sans-serif; cursor: pointer; touch-action: manipulation; }
-    #animation-controls button[data-clip="idle"] { background: #444444; }
-    #animation-controls button:focus-visible { outline: 3px solid white; outline-offset: 2px; }
-    #animation-controls button:active { filter: brightness(.85); }
-    #photo-preview { width: min(90vw, 480px); max-height: 90dvh; box-sizing: border-box; border: 0; border-radius: 16px; padding: 20px; color: white; background: #171717; font-family: sans-serif; text-align: center; }
-    #photo-preview::backdrop { background: rgba(0, 0, 0, .8); }
-    #photo-image { display: block; max-width: 100%; max-height: 60dvh; margin: 0 auto 16px; object-fit: contain; }
-    #photo-preview .actions { display: flex; gap: 12px; justify-content: center; }
-    #photo-preview a, #photo-preview button { border: 0; border-radius: 8px; padding: 12px 18px; font: inherit; cursor: pointer; text-decoration: none; }
-    #photo-save { background: #2463eb; color: white; }
-    #photo-close { background: #eeeeee; color: #171717; }
-    #photo-preview p { font-size: 14px; line-height: 1.4; }
+    [hidden] { display: none !important; }
+    #ar-interface { position: fixed; inset: 0; z-index: 10; pointer-events: none; font: 15px/1.4 system-ui, sans-serif; color: white; }
+    #tap-prompt { position: absolute; top: calc(24px + env(safe-area-inset-top, 0px)); left: 24px; right: 88px; margin: 0; text-shadow: 0 1px 4px #000; }
+    #camera-status { position: absolute; top: calc(84px + env(safe-area-inset-top, 0px)); left: 24px; right: 24px; text-shadow: 0 1px 4px #000; }
+    #camera-switch { position: absolute; top: calc(16px + env(safe-area-inset-top, 0px)); right: 20px; }
+    #action-dock { position: absolute; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); right: 20px; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+    #ar-interface button { width: 52px; height: 52px; display: inline-flex; align-items: center; justify-content: center; padding: 14px; border: 1px solid #ffffff40; border-radius: 50%; background: #171717e6; color: white; cursor: pointer; touch-action: manipulation; pointer-events: auto; box-shadow: 0 4px 16px #0003; }
+    #ar-interface button svg { width: 24px; height: 24px; flex-shrink: 0; }
+    #ar-interface button:focus-visible { outline: 3px solid white; outline-offset: 3px; }
+    #ar-interface button:active { filter: brightness(.8); }
+    #ar-interface button:disabled { opacity: .4; cursor: wait; }
+    #ar-interface #actions-toggle { width: 60px; height: 60px; background: #2463eb; }
+    #action-menu { padding: 12px; display: grid; grid-template-columns: repeat(3, 52px); gap: 10px; border-radius: 24px; background: #171717dc; pointer-events: auto; max-height: calc(100dvh - 220px); overflow-y: auto; }
+    #animation-controls { display: contents; }
+    #photo-preview, #video-preview { width: min(90vw, 480px); max-height: 90dvh; box-sizing: border-box; border: 0; border-radius: 16px; padding: 20px; color: white; background: #171717; font-family: sans-serif; text-align: center; }
+    #photo-preview::backdrop, #video-preview::backdrop { background: rgba(0, 0, 0, .8); }
+    #photo-image, #video-player { display: block; max-width: 100%; max-height: 60dvh; margin: 0 auto 16px; object-fit: contain; }
+    #photo-preview .actions, #video-preview .actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+    #photo-preview a, #photo-preview button, #video-preview a, #video-preview button { border: 0; border-radius: 8px; padding: 12px 18px; font: inherit; cursor: pointer; text-decoration: none; }
+    #photo-save, #video-save { background: #2463eb; color: white; }
+    #photo-close, #video-close { background: #eeeeee; color: #171717; }
+    #photo-preview p, #video-preview p { font-size: 14px; line-height: 1.4; }
+    #recording-bar { box-sizing: border-box; position: absolute; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); left: 20px; right: 96px; display: flex; align-items: center; gap: 8px; width: fit-content; max-width: calc(100% - 116px); padding: 6px 6px 6px 12px; border-radius: 32px; background: #171717ed; }
+    #recording-status { min-width: 0; font-size: 13px; }
+    #recording-time { font-variant-numeric: tabular-nums; }
+    #ar-interface #stop-recording { background: #c92336; border-color: #ff7180; width: 44px; height: 44px; padding: 11px; flex-shrink: 0; }
+    #recording-bar[data-recording="true"]::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #ff4b60; flex-shrink: 0; }
+    #video-player { width: 100%; background: #000; }
   </style>
 </head>
 
@@ -46,19 +60,45 @@
 <div id="app-loading" role="status" aria-live="polite" aria-label="Carregando o app">
   <img src="./assets/jgb.png" alt="JGB Patinação Artística" fetchpriority="high">
   <div class="spinner" aria-hidden="true"></div>
-  <p>Carregando...</p>
+  <p data-i18n="loading">Carregando...</p>
 </div>
-<div id="animation-controls" hidden role="group" aria-label="Ações do Opinho"></div>
+<div id="ar-interface" hidden>
+  <p id="tap-prompt" data-i18n="tap">Toque na tela para colocar o Opinho</p>
+  <p id="camera-status" role="status" aria-live="polite" hidden></p>
+  <button id="camera-switch" type="button"></button>
+  <div id="recording-bar" hidden>
+    <span id="recording-status" role="status" aria-live="polite"></span>
+    <span id="recording-time" aria-hidden="true"></span>
+    <button id="stop-recording" type="button" hidden></button>
+  </div>
+  <div id="action-dock">
+    <div id="action-menu" hidden>
+      <button id="take-photo" type="button"></button>
+      <button id="record-video" type="button"></button>
+      <button id="reset-model" type="button" hidden></button>
+      <div id="animation-controls" hidden role="group" aria-label="Ações do Opinho"></div>
+    </div>
+    <button id="actions-toggle" type="button" aria-controls="action-menu" aria-expanded="false"></button>
+  </div>
+</div>
 <dialog id="photo-preview" aria-label="Foto capturada">
   <img id="photo-image" alt="Foto da cena em realidade aumentada">
   <div class="actions">
-    <a id="photo-save" download>Salvar foto</a>
-    <button id="photo-close" type="button">Voltar</button>
+    <a id="photo-save" data-i18n="save" download>Salvar foto</a>
+    <button id="photo-close" data-i18n="close" type="button">Voltar</button>
   </div>
-  <p>Você também pode manter a imagem pressionada para salvá-la no celular.</p>
+  <p data-i18n="saveHint">Você também pode manter a imagem pressionada para salvá-la no celular.</p>
+</dialog>
+<dialog id="video-preview" aria-label="Vídeo gravado">
+  <video id="video-player" controls playsinline preload="metadata"></video>
+  <div class="actions">
+    <a id="video-save" data-i18n="saveVideo" download>Salvar vídeo</a>
+    <button id="video-close" data-i18n="close" type="button">Voltar</button>
+  </div>
+  <p data-i18n="videoHint">Use Salvar vídeo para baixar a gravação no seu celular.</p>
 </dialog>
 <script crossorigin="anonymous" src="./external/runtime/runtime.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@8thwall/engine-binary@1/dist/xr.js" async crossorigin="anonymous" data-preload-chunks="slam"></script>
+<script src="https://cdn.jsdelivr.net/npm/@8thwall/engine-binary@1/dist/xr.js" async crossorigin="anonymous" data-preload-chunks="slam,face"></script>
 <script src="https://cdn.jsdelivr.net/npm/@8thwall/landing-page@1/dist/landing-page.js" crossorigin="anonymous"></script>
 <script src="bundle.js"></script>
 

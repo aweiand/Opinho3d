@@ -1,5 +1,6 @@
 import * as ecs from '@8thwall/ecs'
 import {Logo} from './logo'
+import {cameraMode} from './camera-mode'
 
 const OBJECT_PLACED_EVENT = 'object-placed'
 const placedObjects = ecs.defineQuery([Logo])
@@ -11,6 +12,8 @@ ecs.registerComponent({
   },
   stateMachine: ({world, eid, schemaAttribute, defineState}) => {
     defineState('initial').initial().listen(eid,  ecs.input.SCREEN_TOUCH_START, (e) => {
+      document.getElementById('tap-prompt')!.hidden = true
+      if (cameraMode.selfie || cameraMode.switching) return
       // Keep placement blocked until Reset has finished removing the current model.
       if (!e.data.worldPosition || placedObjects(world).length > 0) {
         return

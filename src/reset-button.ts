@@ -1,54 +1,11 @@
 import * as ecs from '@8thwall/ecs'
-import { Logo } from './logo'
-import { OBJECT_PLACED_EVENT } from './tap-to-place'
-import {ACTION_STARTED_EVENT, ACTION_FINISHED_EVENT} from './animation-events'
+import {Logo} from './logo'
 
 const logoQuery = ecs.defineQuery([Logo])
 export const RESET_EVENT = 'objects-reset'
 
-ecs.registerComponent({
-  name: 'reset-button',
-  stateMachine: ({world, entity, defineState}) => {
-    defineState('nothing-placed')
-      .initial()
-      .onEvent(OBJECT_PLACED_EVENT, 'placed', {target: world.events.globalId})
-      .onEnter(() => entity.hide())
-      .onExit(() => entity.show())
-
-    defineState('placed')
-      .onEnter(() => entity.show())
-      .onEvent(ACTION_STARTED_EVENT, 'playing', {target: world.events.globalId})
-      .onEvent(ecs.input.UI_CLICK, 'resetting')
-
-    defineState('playing')
-      .onEnter(() => entity.hide())
-      .onEvent(ACTION_FINISHED_EVENT, 'placed', {target: world.events.globalId})
-      
-    defineState('resetting')
-      .wait(1000, 'nothing-placed')
-      .onEnter(() => {
-        world.events.dispatch(world.events.globalId, RESET_EVENT)
-      const tempVector = ecs.math.vec3.zero();
-        logoQuery(world).forEach(e => {
-          world.transform.getLocalPosition(e, tempVector)
-          ecs.PositionAnimation.set(world, e, {
-            duration: 1000,
-            loop: false,
-            fromX: tempVector.x,
-            fromY: tempVector.y,
-            fromZ: tempVector.z,
-            toX: tempVector.x,
-            toY: -4,
-            toZ: tempVector.z,
-            easeIn: true,
-            easingFunction: 'Quadratic'
-          })
-        })
-      })
-      .onExit(() => {
-        logoQuery(world).forEach(e => {
-          world.deleteEntity(e)
-        })
-      })
-  }
-})
+export function resetModels(world: ecs.World) {
+  // Stop action UI state before deleting the animated entities.
+  world.events.dispatch(world.events.globalId, RESET_EVENT)
+  logoQuery(world).forEach(eid => world.deleteEntity(eid))
+}
