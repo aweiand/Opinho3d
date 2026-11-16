@@ -1,0 +1,8 @@
+[
+  {"clip": "idle", "label": "Idle"},
+  {"clip": "agree", "label": "Concordar"},
+  {"clip": "dive", "label": "Cambalhota"},
+  {"clip": "heart_pose", "label": "Coração"},
+  {"clip": "flip", "label": "Estrelinha"},
+  {"clip": "angry_02", "label": "Angry 02"}
+]
