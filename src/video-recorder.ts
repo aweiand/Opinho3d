@@ -18,7 +18,6 @@ export function createVideoRecorder(world: ecs.World, onChange: () => void) {
   let clock: number | undefined
   let watchdog: number | undefined
   let url: string | undefined
-  let stopWhenStarted = false
 
   stopButton.innerHTML = icon('stop')
   labelButton(stopButton, t('stopVideo'))
@@ -57,7 +56,6 @@ export function createVideoRecorder(world: ecs.World, onChange: () => void) {
     watchdog = window.setTimeout(() => fail(new Error('Video export timed out')), 120000)
   }
   const stop = () => {
-    if (state === 'starting') { stopWhenStarted = true; return }
     if (state !== 'recording') return
     processing()
     try { world.xr.stopMediaRecorder() } catch (error) { fail(error) }
@@ -73,21 +71,27 @@ export function createVideoRecorder(world: ecs.World, onChange: () => void) {
     url = undefined
     document.getElementById('actions-toggle')?.focus()
   })
-  // Backgrounding a mobile browser can interrupt camera frames; finalize the current clip.
-  document.addEventListener('visibilitychange', () => { if (document.hidden) stop() })
+  // Only the stop button requests a normal recording stop. Scene touches, animation
+  // transitions and visibility changes must leave an active recording running.
 
   return {
     get active() { return state !== 'idle' },
     get transitioning() { return state === 'starting' || state === 'processing' },
     async start() {
       if (state !== 'idle' || dialog.open) return
-      stopWhenStarted = false
       update('starting')
       watchdog = window.setTimeout(() => {
         try { world.xr.stopMediaRecorder() } catch (error) { console.error(error) }
         fail(new Error('Recorder startup timed out'))
       }, 30000)
       try {
+        // The engine defaults to a 15-second clip. Its stop deadline compares elapsed
+        // time against maxDurationMs, so Infinity disables that automatic stop.
+        // Reapply before every take because camera pipeline restarts reset its config.
+        const xr = (window as Window & {
+          XR8?: {MediaRecorder: {configure: (config: {maxDurationMs: number, enableEndCard: boolean}) => void}}
+        }).XR8!
+        xr.MediaRecorder.configure({maxDurationMs: Infinity, enableEndCard: false})
         // The bundled ECS implementation returns a Promise even though its type says void.
         await world.xr.startMediaRecorder()
       } catch (error) { fail(error) }
@@ -105,10 +109,9 @@ export function createVideoRecorder(world: ecs.World, onChange: () => void) {
       updateClock()
       update('recording')
       clock = window.setInterval(updateClock, 250)
-      if (stopWhenStarted || document.hidden) stop()
     },
     stopped() {
-      // Also handles the recorder's automatic duration limit.
+      // A device-level interruption can still finish the underlying recorder.
       if (state === 'recording' || state === 'starting') processing()
     },
     ready(blob: Blob) {

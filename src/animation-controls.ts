@@ -117,9 +117,9 @@ ecs.registerComponent({
       const model = world.createEntity(prefab)
       world.setParent(model, world.camera.getActiveEid())
       // ECS cameras look along local +Z; the character looks back toward the viewer.
-      world.transform.setLocalPosition(model, {x: -0.38, y: -0.65, z: 1.5})
+      world.transform.setLocalPosition(model, {x: -0.18, y: -0.28, z: 1.8})
       ecs.Quaternion.set(world, model, {x: 0, y: 1, z: 0, w: 0})
-      ecs.Scale.set(world, model, {x: 1.3, y: 1.3, z: 1.3})
+      ecs.Scale.set(world, model, {x: 0.7, y: 0.7, z: 0.7})
       world.events.dispatch(world.events.globalId, OBJECT_PLACED_EVENT)
       prompt.hidden = true
     }
