@@ -2,7 +2,8 @@ import * as ecs from '@8thwall/ecs'
 import {OBJECT_PLACED_EVENT} from './tap-to-place'
 import {RESET_EVENT} from './reset-button'
 import actions from './animation-actions.json'
-import {sampleWalkingMotion, walkingMotion} from './walking-motion'
+import {sampleRootMotion, rootMotions} from './root-motion'
+import {ACTION_STARTED_EVENT, ACTION_FINISHED_EVENT} from './animation-events'
 
 const playEvent = (clip: string) => `opinho-play-${clip}`
 
@@ -10,10 +11,11 @@ ecs.registerComponent({
   name: 'model-animation',
   stateMachine: ({world, eid, defineState}) => {
     for (const {clip, repetitions = 1} of actions) {
+      const motion = rootMotions[clip]
       let elapsed = 0
       let offset = {x: 0, z: 0}
       const moveTo = (time: number) => {
-        const next = sampleWalkingMotion(time, repetitions)
+        const next = sampleRootMotion(motion, time, repetitions)
         world.transform.translateSelf(eid, {x: next.x - offset.x, y: 0, z: next.z - offset.z})
         offset = next
       }
@@ -30,8 +32,10 @@ ecs.registerComponent({
           time: 0,
           crossFadeDuration: 0.15,
         })
+        world.events.dispatch(world.events.globalId,
+          clip === 'idle' ? ACTION_FINISHED_EVENT : ACTION_STARTED_EVENT)
       })
-      if (clip === walkingMotion.clip) {
+      if (motion) {
         state.onTick(() => {
           elapsed += world.time.delta / 1000
           moveTo(elapsed)
@@ -40,7 +44,7 @@ ecs.registerComponent({
         const finished = `${clip}-finished`
         state.onEvent(ecs.events.GLTF_ANIMATION_FINISHED, finished)
         defineState(finished)
-          .onEnter(() => moveTo(walkingMotion.duration * repetitions))
+          .onEnter(() => moveTo(motion.duration * repetitions))
           .wait(1, 'idle')
       } else if (clip !== 'idle') {
         state.onEvent(ecs.events.GLTF_ANIMATION_FINISHED, 'idle')
@@ -66,6 +70,7 @@ ecs.registerComponent({
       button.textContent = label
       button.dataset.clip = clip
       button.onclick = () => {
+        if (controls.hidden) return
         world.events.dispatch(world.events.globalId, playEvent(clip))
       }
       controls.appendChild(button)
@@ -78,10 +83,16 @@ ecs.registerComponent({
     defineState('waiting')
       .initial()
       .onEnter(() => { controls.hidden = true })
-      .onExit(() => { controls.hidden = false })
       .onEvent(OBJECT_PLACED_EVENT, 'ready', {target: world.events.globalId})
 
     defineState('ready')
+      .onEnter(() => { controls.hidden = false })
+      .onEvent(ACTION_STARTED_EVENT, 'playing', {target: world.events.globalId})
+      .onEvent(RESET_EVENT, 'waiting', {target: world.events.globalId})
+
+    defineState('playing')
+      .onEnter(() => { controls.hidden = true })
+      .onEvent(ACTION_FINISHED_EVENT, 'ready', {target: world.events.globalId})
       .onEvent(RESET_EVENT, 'waiting', {target: world.events.globalId})
   },
 })

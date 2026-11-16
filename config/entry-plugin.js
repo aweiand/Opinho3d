@@ -1,4 +1,5 @@
 const path = require('path')
+const fs = require('fs')
 const VirtualModulesPlugin = require('webpack-virtual-modules')
 
 const isCodeFile = file => file.endsWith('.ts') || file.endsWith('.js')
@@ -44,6 +45,10 @@ const createVirtualEntryPlugin = (options = {}) => {
   }
 
   const updateVirtualModules = () => {
+    // A deleted source file must not remain in the generated entry module.
+    importedFiles.forEach((file) => {
+      if (!fs.existsSync(file)) importedFiles.delete(file)
+    })
     const appFiles = Array.from(importedFiles).filter(
       file => file === path.join(srcDir, 'app.js') || file === path.join(srcDir, 'app.ts')
     )
@@ -78,6 +83,12 @@ const createVirtualEntryPlugin = (options = {}) => {
       watcher.on('add', (filePath) => {
         if (isCodeFile(filePath)) {
           importedFiles.add(filePath)
+          updateVirtualModules()
+        }
+      })
+
+      watcher.on('unlink', (filePath) => {
+        if (importedFiles.delete(filePath)) {
           updateVirtualModules()
         }
       })

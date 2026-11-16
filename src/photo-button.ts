@@ -26,11 +26,11 @@ ecs.registerComponent({
       const {overlay} = schemaAttribute.get(eid)
       const wasHidden = ecs.Hidden.has(world, overlay)
       const controls = document.getElementById('animation-controls')!
-      const controlsWereHidden = controls.hidden
+      const controlsVisibility = controls.style.visibility
       try {
         // Wait for the controls to disappear from the rendered frame.
         ecs.Hidden.set(world, overlay)
-        controls.hidden = true
+        controls.style.visibility = 'hidden'
         await nextFrame()
         await nextFrame()
         const photo = await world.xr.takeScreenshot()
@@ -55,7 +55,7 @@ ecs.registerComponent({
         window.alert('Não foi possível capturar a foto. Tente novamente.')
       } finally {
         if (!wasHidden) ecs.Hidden.remove(world, overlay)
-        controls.hidden = controlsWereHidden
+        controls.style.visibility = controlsVisibility
         capturing = false
       }
     })

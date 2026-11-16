@@ -1,6 +1,7 @@
 import * as ecs from '@8thwall/ecs'
 import { Logo } from './logo'
 import { OBJECT_PLACED_EVENT } from './tap-to-place'
+import {ACTION_STARTED_EVENT, ACTION_FINISHED_EVENT} from './animation-events'
 
 const logoQuery = ecs.defineQuery([Logo])
 export const RESET_EVENT = 'objects-reset'
@@ -15,7 +16,13 @@ ecs.registerComponent({
       .onExit(() => entity.show())
 
     defineState('placed')
+      .onEnter(() => entity.show())
+      .onEvent(ACTION_STARTED_EVENT, 'playing', {target: world.events.globalId})
       .onEvent(ecs.input.UI_CLICK, 'resetting')
+
+    defineState('playing')
+      .onEnter(() => entity.hide())
+      .onEvent(ACTION_FINISHED_EVENT, 'placed', {target: world.events.globalId})
       
     defineState('resetting')
       .wait(1000, 'nothing-placed')
