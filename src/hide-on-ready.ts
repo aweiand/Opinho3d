@@ -9,6 +9,8 @@ ecs.registerComponent({
 
     defineState('ready').onEnter(() => {
       ecs.Disabled.reset(world, eid)
+      const loadingScreen = document.getElementById('app-loading')
+      if (loadingScreen) loadingScreen.hidden = true
     })
   }
 })

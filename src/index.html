@@ -1,24 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>World Effects</title>
-  <meta itemprop="name" content="World Effects">
-  <meta name="twitter:title" content="World Effects">
-  <meta property="og:title" content="World Effects">
-  <meta property="og:site_name" content="World Effects">
-  <meta name="description" content="This project demonstrates how to use World Effects to anchor virtual content to a flat surface.">
-  <meta itemprop="description" content="This project demonstrates how to use World Effects to anchor virtual content to a flat surface.">
-  <meta property="og:description" content="This project demonstrates how to use World Effects to anchor virtual content to a flat surface.">
-  <meta name="twitter:description" content="This project demonstrates how to use World Effects to anchor virtual content to a flat surface.">
-  <script crossorigin="anonymous" src="./external/runtime/runtime.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@8thwall/engine-binary@1/dist/xr.js" async crossorigin="anonymous" data-preload-chunks="slam"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@8thwall/landing-page@1/dist/landing-page.js" crossorigin="anonymous"></script>
+  <title>JGB Patinação Artística</title>
+  <meta itemprop="name" content="JGB Patinação Artística - Opinho">
+  <meta name="twitter:title" content="JGB Patinação Artística - Opinho">
+  <meta property="og:title" content="JGB Patinação Artística - Opinho">
+  <meta property="og:site_name" content="JGB Patinação Artística - Opinho">
+  <meta name="description" content="Interaja com o Opinho, mascote da JGB Patinação Artística, na sua própria casa!">
+  <meta itemprop="description" content="Interaja com o Opinho, mascote da JGB Patinação Artística, na sua própria casa!">
+  <meta property="og:description" content="Interaja com o Opinho, mascote da JGB Patinação Artística, na sua própria casa!">
+  <meta name="twitter:description" content="Interaja com o Opinho, mascote da JGB Patinação Artística, na sua própria casa!">
+  <link rel="preload" href="./assets/jgb.png" as="image">
   <meta property="og:image" content="https://8thwall.org/studio-world-effects-example/assets/preview.png">
   <style>
+    body { margin: 0; }
+    #app-loading { position: fixed; inset: 0; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; padding: 24px; background: #000; color: #fff; font: 18px/1.5 system-ui, sans-serif; text-align: center; pointer-events: none; }
+    #app-loading[hidden] { display: none; }
+    #app-loading img { width: min(65vw, 260px); height: auto; }
+    #app-loading p { margin: 0; }
+    #app-loading .spinner { width: 28px; height: 28px; border: 3px solid #ffffff40; border-top-color: #fff; border-radius: 50%; animation: loading-spin 1s linear infinite; }
+    @keyframes loading-spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { #app-loading .spinner { animation: none; } }
     #animation-controls { position: fixed; left: 5%; bottom: calc(140px + env(safe-area-inset-bottom, 0px)); width: 90%; max-width: 480px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; z-index: 10; }
     #animation-controls[hidden] { display: none; }
     #animation-controls button { min-height: 44px; padding: 8px 12px; border: 0; border-radius: 8px; background: #2463eb; color: white; font: 16px/1.4 system-ui, sans-serif; cursor: pointer; touch-action: manipulation; }
@@ -37,6 +43,11 @@
 </head>
 
 <body>
+<div id="app-loading" role="status" aria-live="polite" aria-label="Carregando o app">
+  <img src="./assets/jgb.png" alt="JGB Patinação Artística" fetchpriority="high">
+  <div class="spinner" aria-hidden="true"></div>
+  <p>Carregando...</p>
+</div>
 <div id="animation-controls" hidden role="group" aria-label="Ações do Opinho"></div>
 <dialog id="photo-preview" aria-label="Foto capturada">
   <img id="photo-image" alt="Foto da cena em realidade aumentada">
@@ -46,6 +57,9 @@
   </div>
   <p>Você também pode manter a imagem pressionada para salvá-la no celular.</p>
 </dialog>
+<script crossorigin="anonymous" src="./external/runtime/runtime.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@8thwall/engine-binary@1/dist/xr.js" async crossorigin="anonymous" data-preload-chunks="slam"></script>
+<script src="https://cdn.jsdelivr.net/npm/@8thwall/landing-page@1/dist/landing-page.js" crossorigin="anonymous"></script>
 <script src="bundle.js"></script>
 
 </body>
